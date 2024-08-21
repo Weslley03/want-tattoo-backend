@@ -3,9 +3,9 @@ import { generateToken, loginUserService, registerUserService } from "../service
 
 export async function loginUser(req: Request, res: Response){
   try{
-    const { emailUser, passwordUser } = req.body; 
+    const { userEmail, userPassword } = req.body;
     
-    const loginResponse = await loginUserService(emailUser, passwordUser);
+    const loginResponse = await loginUserService(userEmail, userPassword);
     if(!loginResponse){
       return res.status(500).json({
         message: "an error occurred while trying to login",
@@ -14,7 +14,9 @@ export async function loginUser(req: Request, res: Response){
     }
     
     const { user, message, OK } = loginResponse;
-    const userToken = generateToken(user._id);
+    if(!OK) return res.status(400).send({ message, OK });
+
+    const userToken = await generateToken(user._id);
     return res.status(200).send({ userToken, message, OK });
   }catch(err){
     console.error('houve um erro na execução da função de LOGIN:', err)

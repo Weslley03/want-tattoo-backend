@@ -67,7 +67,7 @@ export async function loginUserService(emailUser: string, passwordUser: string):
       OK: true
     }
   }catch(err){
-    console.error('houve um erro na execução do SERVICE de LOGIN:', err)
+    console.error('houve um erro na execução do SERVICE de LOGIN: ', err)
     return undefined
   }
 }
@@ -78,7 +78,7 @@ export async function generateToken(userId: string): Promise<string | undefined>
     if(!SECRET_JWT) throw new Error('SECRET_KEY is not defined in the environment variables');
     return jwt.sign({userId: userId}, SECRET_JWT, {expiresIn: 86400})
   }catch(err){
-    console.error('houve um erro na execução do SERVICE de LOGIN:', err);
+    console.error('houve um erro na execução da função generateToken', err);
     return undefined;
   }
 }
@@ -106,7 +106,7 @@ export async function registerUserService(body: IUserRegistrationData): Promise<
       OK: true
     }
   }catch(err){
-    console.error('houve um erro na execução do SERVICE de CADASTRO:', err);
+    console.error('houve um erro na execução do SERVICE de CADASTRO: ', err);
     return undefined;
   }
 }

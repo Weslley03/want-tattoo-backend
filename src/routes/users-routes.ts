@@ -25,7 +25,7 @@ const router = Router();
  *       400:
  *         description: invalid request
  */
-router.get('login-user', loginUser);
+router.get('/login-user', loginUser);
 /**
  * @swagger
  * /register-user:
