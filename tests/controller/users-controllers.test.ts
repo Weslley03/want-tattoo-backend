@@ -12,8 +12,8 @@ describe('loginUser CONTROLLER', () => {
   it('should return a token and message on successful login', async () => {
     const req = {
       body: {
-        emailUser: 'testing@examble.com',
-        passwordUser: 'password123',
+        userEmail: 'testing@examble.com',
+        userPassword: 'password123',
       },
     } as Request;
     
