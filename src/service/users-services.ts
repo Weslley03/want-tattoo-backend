@@ -29,6 +29,15 @@ interface IUserRegistrationData {
     userCity: string;
 };
 
+export interface UserUpdatePayload {
+  userName?: string;
+  userEmail?: string;
+  userPassword?: string;
+  userAge?: number;
+  userCity?: string;
+  userAvatar?: string;
+}
+
 const statusFailed = (messageError: string) => {
   return {
     user: {
@@ -44,6 +53,17 @@ const statusFailed = (messageError: string) => {
     OK: false
   }
 };
+
+export async function generateToken(userId: string): Promise<string | undefined>{
+  try{
+    const SECRET_JWT = process.env.SECRET_JWT;
+    if(!SECRET_JWT) throw new Error('SECRET_KEY is not defined in the environment variables');
+    return jwt.sign({userId: userId}, SECRET_JWT, {expiresIn: 86400})
+  }catch(err){
+    console.error('houve um erro na execução da função generateToken', err);
+    return undefined;
+  }
+}
 
 export async function loginUserService(emailUser: string, passwordUser: string): Promise<IResponse | undefined> {
   try{
@@ -72,17 +92,6 @@ export async function loginUserService(emailUser: string, passwordUser: string):
   }
 }
 
-export async function generateToken(userId: string): Promise<string | undefined>{
-  try{
-    const SECRET_JWT = process.env.SECRET_JWT;
-    if(!SECRET_JWT) throw new Error('SECRET_KEY is not defined in the environment variables');
-    return jwt.sign({userId: userId}, SECRET_JWT, {expiresIn: 86400})
-  }catch(err){
-    console.error('houve um erro na execução da função generateToken', err);
-    return undefined;
-  }
-}
-
 export async function registerUserService(body: IUserRegistrationData): Promise<IResponse | undefined>{
   try{
     const bodyData = {
@@ -97,7 +106,7 @@ export async function registerUserService(body: IUserRegistrationData): Promise<
         _id: user._id.toString(),
         userName: user.userName,
         userEmail: user.userEmail,
-        userPassword: user.userPassword,
+        userPassword: '',
         userAge: user.userAge,
         userCity: user.userCity,
         userAvatar: user.userAvatar
@@ -109,4 +118,28 @@ export async function registerUserService(body: IUserRegistrationData): Promise<
     console.error('houve um erro na execução do SERVICE de CADASTRO: ', err);
     return undefined;
   }
+}
+
+export async function updateProfileUserService(userID:string, userForUpdate: UserUpdatePayload): Promise<IResponse | undefined> {
+  try{
+    const user = await User.findByIdAndUpdate(userID, userForUpdate, { new: true }).exec();
+    if (!user) return statusFailed('could not update user');
+
+    return {
+      user: {
+        _id: user._id.toString(),
+        userName: user.userName,
+        userEmail: user.userEmail,
+        userPassword: user.userPassword,
+        userAge: user.userAge,
+        userCity: user.userCity,
+        userAvatar: user.userAvatar
+      },
+      message: 'UPDATE OK',
+      OK: true
+    }
+  } catch(err){
+    console.error('houve um erro na execução do SERVICE de UPDATE: ', err);
+    return undefined; 
+  } 
 }
