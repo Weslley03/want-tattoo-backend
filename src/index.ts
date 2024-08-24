@@ -11,7 +11,7 @@ import { setupSwagger } from './swagger';
 setupSwagger(app);
 
 import userRouter from '../src/routes/users-routes'
-app.use('/auth', userRouter)
+app.use('/user', userRouter)
 
 connetcDatabase();
 app.listen(3000, () => {

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { loginUser, registerUser } from "../controller/users-controllers";
+import { loginUser, registerUser, updateProfileUser } from "../controller/users-controllers";
 const router = Router();
 
 /**
@@ -25,7 +25,7 @@ const router = Router();
  *       400:
  *         description: invalid request
  */
-router.get('/login-user', loginUser);
+router.get('/login', loginUser);
 /**
  * @swagger
  * /register-user:
@@ -55,6 +55,42 @@ router.get('/login-user', loginUser);
  *       400:
  *         description: invalid request
  */
-router.post('/register-user', registerUser);
+router.post('/register', registerUser);
+
+/**
+ * @swagger
+ * /update-profile-user:
+ *   patch:
+ *     summary: Update user profile
+ *     description: this endpoint allows an authenticated user to update their profile information. requires a valid bearer token in the authorization headers.
+ *     tags: [User]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               userName:
+ *                 type: string
+ *               userEmail:
+ *                 type: string
+ *               userPassword:
+ *                 type: string
+ *               userAge:
+ *                 type: number
+ *               userCity:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: user profile updated successfully.
+ *       400:
+ *         description: invalid request.
+ *       401:
+ *         description: unauthorized. Bearer token is missing or invalid.
+ */
+router.patch('/update-profile/:userID', updateProfileUser);
 
 export default router; 
